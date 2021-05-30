@@ -1,5 +1,29 @@
 # Templates and Generic Programming
 
+[typename vs class](#typename-vs-class)
+
+[Non-type template parameters](#non-type-template-parameters)
+
+[Template Declerations](#template-declerations)
+
+[Template default arguments](#template-default-arguments)
+
+[Template Argument Deduction](#template-argument-deduction)
+
+[Template Compilation & Initialization](#template-compilation--initialization)
+
+[Class Templates](#class-templates)
+
+[Variadic Templates](#variadic-templates)
+
+[Template Specialization](#template-specialization)
+
+[Overloading vs. Template Specialization](#overloading-vs-template-specialization)
+
+[Best Practices](#best-practices)
+
+[Additional Resources](#additional-resources)
+
 ## typename vs class
 `typename`: allows to use non-class built-in types as template type parameters
 
