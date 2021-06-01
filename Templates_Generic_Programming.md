@@ -6,7 +6,7 @@
 
 [Template Declerations](#template-declerations)
 
-[Template default arguments](#template-default-arguments)
+[Template Default Arguments](#template-default-arguments)
 
 [Template Argument Deduction](#template-argument-deduction)
 
@@ -34,10 +34,8 @@ A non-type parameter represents a value instead of a type.
 ```cpp
 //class
 template<typename T, size_t Size>
-class array
-{
-/**/
-};
+class array{/**/};
+
 //usage
 auto arr = std::array<int, 5>{1,2,3,4,5};
 
@@ -50,7 +48,6 @@ auto result = compare("hi", "buddy");
 ```
 If the non-type argument is bound to an integral type, the argument should be constant expression. If it is bound to a reference or pointer, it must have a static lifetime. A pointer can be `nullptr` or zero-valued constant expression.
 
-
 ## Template Declerations
 ```cpp
 template <typename T> int compare(const T&, const T&);
@@ -58,7 +55,7 @@ template <typename T> class Blob;
 ```
 > It is always a good practice to provide declerations at the begining of the file before they are used.
 
-## Template default arguments
+## Template Default Arguments
 If a template has default arguments, to use is with default arguments call with empty brackets.
 ```cpp
 //function
@@ -78,7 +75,8 @@ Template argument deduction takes place after the function template name lookup 
 
 **Value**
 ```cpp
-template<typename T>void f(T){/**/}
+template<typename T>
+void f(T){/**/}
 
 int a[3];
 f(a); // P = T, A = int[3], adjusted to int*: deduced T = int*
@@ -131,7 +129,8 @@ f(b);// deduced type: const int* - arg type: const int*
 
 **Const Value**
 ```cpp
-template<typename T>void f(const T arg){/**/}
+template<typename T>
+void f(const T arg){/**/}
 
 // Pass by value
 // -------------
@@ -227,7 +226,8 @@ f(4); // must be an lvalue
 // rvalues
 // temp objects
 // literals
-template<typename T>void f(const T &){/**/}
+template<typename T>
+void f(const T &){/**/}
 
 // Pass by value
 // -------------
@@ -274,6 +274,81 @@ f(std::move(cval)); // deduced type: int - arg type: const int &
 
 ```
 
+
+### Function pointers
+```cpp
+template<typename T>
+int comp(const T&, const T&);
+
+// legal
+int(*func_ptr)(const int&, const int&) = comp; //OK
+
+void func(int(*)(const std::string&, const std::string&));
+void func(int(*)(const int&, const int&));
+
+// ambiguity
+func(compare); // ERROR
+// clean
+func(compare<int>); // LEGAL
+func(compare<std::string>); // LEGAL
+```
+
+### References
+#### L-Value
+- Non-const
+```cpp
+template<typename T>
+void func(T&);
+// 
+int i = 2;
+const int ci = 3;
+// Rule: Only l-values can be passed(const or non-const)
+func(i); // deduced type is int
+func(ci); //deduced type is const int
+func(4); // ERROR: it is an r-value
+```
+
+- Const
+```cpp
+template<typename T>
+void func(const T&);
+// 
+int i = 2;
+const int ci = 3;
+// Rule: Any kind of argument (const or non-const) (an object, a temp object,or a literal) can be passed
+func(i); // deduced type for T: int
+func(ci);// deduced type for T: int
+func(4); // const& par can bound to an r-value: T is int
+```
+#### R-Value - Universal reference
+The `T&&` in template function has two meanings:
+1. r-value reference: It can bound to r-value references
+2. universal reference: `T&&` can be r-value or l-value reference. They can bind to:
+    - r-value refs
+    - l-value refs
+    - const or non-const objects
+    - volatile or non-volatile objects
+    - Even to objects both const and volatile.
+
+```cpp
+template<typename T>
+void func(T&& param);
+
+Widget w;
+func(w); // l-value is passed, param's type: Widget&
+func(std::move(w)) // r-value is passed. param's  type: Widget&&
+func(Widget()); // temp(r-value) is passed so param's type: Widget&&
+func(42); //temp(r-value) so param's type: int&& and deduced type for T: int
+```
+
+#### Reference Collapsing
+Actually, the `universal reference` idiom sits on top of the `reference collapsing` mechanism. If a reference to a reference is created `indirectly` (via type alias or template parameter) then proper `reference collapsing` occurs.
+
+> `T& &`, `T& &&` and `T&& &` collapse to `T&`.
+> `T&& &&` collapses to `T&`.
+
+This yields to the fact that if an l-value reference is passed to the template argument `T&&`, reference collapsing occurs and it is bound to an l-value reference at the end.
+
 ## Template Compilation & Initialization
 
 1. Compiler checks the template itself for any syntax error.
@@ -313,6 +388,42 @@ void myFunc(const MyClass & arg){/**/}
 ```
 
 ## Class Templates
+One of the major difference from function templates is that class templates can not deduce the type parameter from given arguments so `the type information should be provided within the brackets <> for class templates during instantiation`.
+
+### Member functions
+Class template member functions can be defined inside or outside the class. The member functions defined inside are `inline` by default. The template parameter list is not required to be specified for member functions defined inside but not so for outside member functions.
+```cpp
+template<typename T>
+class pq
+{
+public:
+    void pop()// marked as inline by default
+    {
+        std::pop_heap(c.begin(), c.end(), comp);
+        c.pop_back();
+    }
+};
+
+// Outside
+template<typename T>
+void pq::push(const T& val)
+{
+    c.push_back(val);
+    std::push_heap(c.begin(), c.end(), comp);
+}
+```
+> By default, a member function of an instantiated class template is only instantiated when that member function is used.
+
+Within the class scope, the compiler can deduce the class template's argument type so no need to specify it.
+```cpp
+template<typename T>
+class pq
+{
+public:
+    pq& operator=(const pq& rhs) {/**/}
+    // no need to specify the return or argument type as pq<T>
+};
+```
 
 ### Template type aliases
 
@@ -330,6 +441,20 @@ partNo<Vehicle> cars;
 The scope `::` operator normally resolves for a class member. If the class member is a type, `typename` keyword should be used.
 
 ```cpp
+// Old style (typedef)
+template<typename T, typename Container = std::vector<T>, typename Compare = std::less<T>>
+class priority_queue
+{
+public:
+    typedef Container                           container_type;
+    typedef Compare                             value_compare;
+    typedef typename container_type::value_type    value_type;
+    typedef typename container_type::reference     reference;
+    typedef typename container_type::size_type     size_type;
+    static_assert((std::is_same<T, value_type>::value), "");
+};
+
+// New style (using)
 template<typename T, std::size_t Size>
 class iterator
 {
@@ -365,6 +490,92 @@ std::size_t smart_ptr<T>::refCount_ = 0;
 ```
 
 ### Friendships
+It is always good practice to forward declare the template function or class which is going to be the friend of a given template class.
+
+#### Same type
+```cpp
+// fwd decls are required
+template<typename T> class pq_ptr;
+template<typename T> class pq; // required for operator()== overload
+template<typename T>
+bool operator==(const pq<T>&, const pq<T>&);
+
+// template class definition
+template<typename T>
+class pq
+{
+public:
+    // class pq grants access to the verion of
+    // pq_ptr and the operator== function instantiated with the same type
+    friend class pq_ptr<T>;
+    friend bool operator==<T>(const pq<T>&, const pq<T>&);
+};
+
+// Usage
+pq<int> pi; //pq_ptr<int> and operator==<int> are friends with pq<int>
+```
+#### Specific Type
+- Example 1:
+```cpp
+//fwd decl for template class
+template<typename T> class Pal; 
+
+// non-template class
+class A
+{
+    friend class Pal<A>; // friendship to specific instantiation of class Pal
+};
+
+```
+- Example 2:
+```cpp
+// template class
+template<typename T>
+class B
+{
+    friend class Pal3;
+    // friendship to Pal3
+    // no prior fwd decl required since it is a non-template class
+};
+```
+
+#### General
+When general friendship is in place, no prior forward decleration is required.
+- Example 1:
+```cpp
+// non-template class
+class A
+{
+    template<typename T>
+    friend class Pal2;
+    // friendship to all instantiations of Pal2
+};
+```
+
+- Example 2:
+```cpp
+// template class definition
+template<typename T>
+class B
+{
+    template<typename X>
+    friend class Pal2;
+    // friendship to all instantiations of Pal2
+    // all instances of Pal2 are friends with all instances of B
+};
+```
+> To allow all instantiations as friends, the friend's template parameter(s) should differ from the template class which grants the friendship.
+
+#### Own Type
+```cpp
+template<typename T>
+class C
+{
+    friend T;
+    // class C grants access to the type T
+    // T can be user defined or built-in type
+};
+```
 
 ## Variadic Templates
 ### Function
