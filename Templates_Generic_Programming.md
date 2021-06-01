@@ -705,3 +705,4 @@ struct FImpl
 ## Additional Resources
 - [CppCon 2016: Arthur O'Dwyer “Template Normal Programming (part 1 of 2)”](<https://www.youtube.com/watch?v=vwrXHznaYLA&feature=youtu.be>)
 - [Back to Basics: Function and Class Templates - Dan Saks - CppCon 2019](<https://www.youtube.com/watch?v=LMP_sxOaz6g>)
+- C++ Primer, Stanley B. Lippman, Josee Lajoie and Barbara E. Moo.
