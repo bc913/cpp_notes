@@ -3,26 +3,26 @@
 This repo reflects some of the best practices for C++ based on my knowledge and professional experience. I consider this repo as my personal C++ guideline and it is highly inspired by very well-known C++ experts such as Scott Meyers, Herb Sutter, Andrei Alexandrescu, etc. and their publications.
 
 ## Contents
-[Class Design](ClassDesign.md)
+[Class Design](notes/ClassDesign.md)
 
-[Inheritance & Polymorphism](Inheritance_Polymorphism.md)
+[Inheritance & Polymorphism](notes/Inheritance_Polymorphism.md)
 
-[Operator Overloading](OperatorOverloading.md)
+[Operator Overloading](notes/OperatorOverloading.md)
 
-[Templates & Generic Programming](Templates_Generic_Programming.md)
+[Templates & Generic Programming](notes/Templates_Generic_Programming.md)
 
-[Move & Forwarding](MoveAndForwarding.md)
+[Move & Forwarding](notes/MoveAndForwarding.md)
 
-[Concurrency](Concurrency.md)
+[Concurrency](notes/Concurrency.md)
 
-[Iterator Traits](IteratorTraits.md)
+[Iterator Traits](notes/IteratorTraits.md)
 
-[Type Traits](TypeTraits.md)
+[Type Traits](notes/TypeTraits.md)
 
-[Exception Safety](ExceptionSafety.md)
+[Exception Safety](notes/ExceptionSafety.md)
 
-[Efficiency & Performance](Efficieny_Performance.md)
+[Efficiency & Performance](notes/Efficieny_Performance.md)
 
 [Idioms](Idioms.md)
 
-[Misc](Misc.md)
+[Misc](notes/Misc.md)
