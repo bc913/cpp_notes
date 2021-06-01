@@ -2,7 +2,7 @@
 ## Introduction
 This repo reflects some of the best practices for C++ based on my knowledge and professional experience. I consider this repo as my personal C++ guideline and it is highly inspired by very well-known C++ experts such as Scott Meyers, Herb Sutter, Andrei Alexandrescu, etc. and their publications.
 
-## Contents
+## Notes
 [Class Design](notes/ClassDesign.md)
 
 [Inheritance & Polymorphism](notes/Inheritance_Polymorphism.md)
@@ -24,3 +24,7 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 [Efficiency & Performance](notes/Efficieny_Performance.md)
 
 [Misc](notes/Misc.md)
+
+## Books
+- Modern C++ Design, Andrei Alexandrescu ([Chapter 1](books/moden_cpp_design/ch1.md))
+
