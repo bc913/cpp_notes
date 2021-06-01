@@ -23,6 +23,4 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 
 [Efficiency & Performance](notes/Efficieny_Performance.md)
 
-[Idioms](Idioms.md)
-
 [Misc](notes/Misc.md)
