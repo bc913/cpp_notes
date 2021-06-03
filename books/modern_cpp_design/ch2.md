@@ -71,9 +71,55 @@ namespace bc
         typedef integral_constant   type;
         constexpr operator value_type() const noexcept { return value; }
     };
+    // bool_constant
+    template<bool Val>
+    using bool_constant = integral_constant<bool, Val>;
+    using true_type = bool_constant<true>;
+    using false_type = bool_constant<false>;
 
-    typedef integral_constant<bool, true>   true_type;
-    typedef integral_constant<bool, false>  false_type;
+    /*
+    // typedef integral_constant<bool, true>   true_type;
+    // typedef integral_constant<bool, false>  false_type;
+    // struct true_t : public integral_constant<bool, true>{};
+    // struct false_t : public integral_constant<bool, false>{};
+    */
+
+    // remove_cv
+    template< class T > struct remove_cv                   { typedef T type; };
+    template< class T > struct remove_cv<const T>          { typedef T type; };
+    template< class T > struct remove_cv<volatile T>       { typedef T type; };
+    template< class T > struct remove_cv<const volatile T> { typedef T type; };
+    template< typename T>
+    using remove_cv_t = typename remove_cv<T>::type;
+    
+    template< class T > struct remove_const                { typedef T type; };
+    template< class T > struct remove_const<const T>       { typedef T type; };
+    template<typename T>
+    using remove_const_t = typename remove_const<T>::type;
+    
+    template< class T > struct remove_volatile             { typedef T type; };
+    template< class T > struct remove_volatile<volatile T> { typedef T type; };
+    template<typename T>
+    using remove_volatile_t = typename remove_volatile<T>::type;
+
+    // is_same
+    template<typename T, typename U>
+    struct is_same : false_type{};
+
+    template<typename T>
+    struct is_same<T, T> : true_type{}; //partial specialization
+
+    template<typename T, typename U>
+    inline constexpr bool is_same_v = is_same<T, U>::value;
+
+    // is_nullptr
+    template<typename T>
+    struct is_null_pointer : is_same<std::nullptr_t, remove_cv_t<T>>{};
+
+    template<typename T>
+    inline constexpr bool is_null_pointer_v = is_null_pointer<T>::value;
+   
+    
     // enable_if
     template<bool, typename T = void>
     struct enable_if{};
@@ -83,5 +129,10 @@ namespace bc
     {
         typedef T   type;
     };
+
+    template<bool B, typename T = void>
+    using enable_if_t = typename enable_if<B, T>::type;
+
+
 }
 ```
