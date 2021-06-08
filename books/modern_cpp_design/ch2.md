@@ -132,7 +132,83 @@ namespace bc
 
     template<bool B, typename T = void>
     using enable_if_t = typename enable_if<B, T>::type;
-
-
 }
+
+template<typename T>
+class Container
+{
+    // polymorphic operation
+    void do_something(T* obj, std::true_type)
+    {
+        T* newObj = obj->Clone();
+        /*...*/
+    }
+
+    // non-polymoprhic operation
+    void do_something(T* obj, std::false_type)
+    {
+        T* newObj = new T(*obj);
+        /*...*/
+    }
+
+public:
+    void do_something(T* obj)
+    {
+        do_something(obj, typename std::is_polymorphic<T>::type());
+    }
+};
+
+class A
+{
+public:
+    virtual A* Clone() const { return new A(*this); }
+};
+
+class B : public A
+{
+public:
+    A* Clone() const override { return new B(*this); }
+};
+
+int main()
+{
+    Container<int> c;
+    int* obj = new int(5);
+
+    c.do_something(obj);
+    delete obj;
+
+    Container<A> ca;
+    B* b_obj = new B();
+    ca.do_something(b_obj);
+
+    return 0;
+}
+```
+
+## Typee-to-type MApping
+Since the partial specialization of functions is not allowed in C++, customization is only available through overloading. An operation can be implemented differently for different types. A light type transformation template can be used for this purpose.
+
+```cpp
+template<typename T>
+struct Type2Type
+{
+    typedef T OriginalType;
+};
+
+template<typename T, typename U>
+T* Create(const U& arg, Type2Type<T>)
+{
+    return new T(arg);
+}
+
+template<typename U>
+T* Create(const U& arg, Type2Type<Widget>)
+{
+    return new Widget(arg, -1);
+}
+
+//client
+std::string* p_str = Create("Hello", Type2Type<std::string>());
+Widget* pw = Create(100, Type2Type<Widget>());
 ```
