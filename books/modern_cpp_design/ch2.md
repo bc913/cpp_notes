@@ -104,10 +104,10 @@ namespace bc
 
     // is_same
     template<typename T, typename U>
-    struct is_same : false_type{};
+    struct is_same : public false_type{};
 
     template<typename T>
-    struct is_same<T, T> : true_type{}; //partial specialization
+    struct is_same<T, T> : public true_type{}; //partial specialization
 
     template<typename T, typename U>
     inline constexpr bool is_same_v = is_same<T, U>::value;
