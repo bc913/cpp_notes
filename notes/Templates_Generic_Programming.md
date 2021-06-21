@@ -643,6 +643,144 @@ void display(Args ...args)
 ### Class:
 Variadic class templates can be used to model tuple through empty base optimization. [Link](https://eli.thegreenplace.net/2014/variadic-templates-in-c/#id8)
 
+The most well known variadic class template implementation is `std::tuple`.
+```cpp
+#include <cstddef>
+#include <iostream>
+#include <type_traits>
+
+namespace bc
+{
+    template<typename... Types>
+    class tuple;
+
+    template<>
+    class tuple<>{};
+
+    template<typename Head, typename... Tail>
+    struct tuple<Head, Tail...> : tuple<Tail...>
+    {
+        tuple(Head h, Tail... ts) : tuple<Tail...>(ts...), m_head(h) {}
+        Head m_head;
+    };
+
+    // helper classes
+    template<typename... Types>
+    struct tuple_size;
+
+    template<>
+    struct tuple_size<tuple<> >
+    {
+        static constexpr std::size_t value = 0;
+    };
+
+    template<typename Head, typename... Tail>
+    struct tuple_size<tuple<Head, Tail...> >
+    {
+        static constexpr std::size_t value = 1 + tuple_size<tuple<Tail...>>::value;
+    };
+
+    template<typename... Types>
+    struct tuple_size2;
+
+    template<typename... Types>
+    struct tuple_size2<tuple<Types...>>
+    : public std::integral_constant<size_t, sizeof...(Types)> {};
+
+    namespace impl
+    {
+        // fwd decl
+        template<std::size_t, typename>
+        struct tuple_element;
+
+        template<typename Head, typename... Tail>
+        struct tuple_element<0, tuple<Head, Tail...>>
+        {
+            typedef Head type;
+        };
+
+        template<std::size_t k, typename Head, typename... Tail>
+        struct tuple_element<k, tuple<Head, Tail...>>
+        {
+            typedef typename tuple_element<k-1, tuple<Tail...>>::type type;            
+        };
+
+        /*
+        template<size_t __i, typename _Head, typename... _Tail>
+        struct tuple_element<__i, tuple<_Head, _Tail...> >
+        : tuple_element<__i - 1, tuple<_Tail...> > { };
+
+        //Basis case for tuple_element: The first element is the one we're seeking.
+        template<typename _Head, typename... _Tail>
+        struct tuple_element<0, tuple<_Head, _Tail...> >
+        {
+            typedef _Head type;
+        };
+
+        //Error case for tuple_element: invalid index.
+        template<size_t __i>
+        struct tuple_element<__i, tuple<>>
+        {
+            static_assert(__i < tuple_size<tuple<>>::value,
+            "tuple index is in range");
+        };        
+        */
+
+
+    }
+
+    template<std::size_t index, typename... Types>
+    typename std::enable_if<
+        !index, 
+        typename impl::tuple_element<0, tuple<Types...>>::type&>::type
+    get(tuple<Types...>& arg)
+    {
+        return arg.m_head;        
+    }
+
+    template <std::size_t k, class T, class... Types>
+    typename std::enable_if<
+        k != 0, typename impl::tuple_element<k, tuple<T, Types...>>::type&>::type
+    get(tuple<T, Types...>& t) 
+    {
+        tuple<Types...>& base = t;
+        return get<k - 1>(base);
+    }
+}
+
+template <
+    class T, 
+    typename std::enable_if<std::is_integral<T>::value, bool>::type = true
+    >
+void do_stuff(T& t) 
+{
+  std::cout << "do_stuff integral\n";
+    // an implementation for integral types (int, char, unsigned, etc.)
+}
+
+template <class T,
+          typename std::enable_if<std::is_class<T>::value, bool>::type = true>
+void do_stuff(T& t) 
+{
+    std::cout << "do_stuff class\n";
+    // an implementation for class types
+}
+
+int main()
+{
+    auto b = bc::tuple<int, double, float>(3, 4.5, 6.7);
+    std::cout << "Size: " << bc::tuple_size<decltype(b)>::value << std::endl;
+    std::cout << "Size: " << bc::tuple_size2<decltype(b)>::value << std::endl;
+
+    std::cout << "t[0]: " << bc::get<0>(b) << "\n";
+    std::cout << "t[1]: " << bc::get<1>(b) << "\n";
+    std::cout << "t[2]: " << bc::get<2>(b) << "\n";
+
+    int d = 3;
+    do_stuff<int>(d);    
+    return 0;
+}
+```
 
 ## Template Specialization:
 ### Function
