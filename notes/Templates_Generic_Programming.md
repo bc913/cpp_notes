@@ -578,21 +578,40 @@ class C
 ```
 
 ## Variadic Templates
+
+### Terms & Definitions
+```cpp
+template<typename T, typename... Args>
+void foo(const T&, const Args& ... rest);
+```
+- `typename... Args`: template parameter pack. Represents zero or more template type parameters
+- `const Args& ... rest`: function parameter pack. Represents zero or more function parameters
+
 ### Function
 Variadic functions are often recursive.
+
 ```cpp
+// base func for recursion termination
+// function to end the recursion and operate on the last element
+// this must be declared before the variadic version
 template<typename T>
 std::ostream& print(std::ostream& os, const T& t)
 {
     return os << t;
 }
 
+// will be called for all elements in the pack except the last one
 template<typename T, typename ...Args>
-std::ostream& print(std::ostream& os, const T& t, const Args&... rest)
+std::ostream& print(std::ostream& os, const T& t, const Args&... rest)//expand Args
 {
     os << t << ", ";
-    return print(os, rest...);
+    return print(os, rest...);//expand rest
 }
+
+// Client
+print(std::cout, i, str, 43);   // t:i, res... = str, 43
+print(std::cout, str, 43);      // t=str, res... = 43
+print(std::cout, 43);           // calls the non-variadic version
 ```
 
 How to call nonvariadic template function with variadic args
@@ -608,6 +627,7 @@ std::string debug_rep(const T& t)
 template<typename ...Args>
 std::ostream& errorMsg(std::ostream& os, const Args&... rest)
 {
+    // print(os, debug_rep(rest1), debug_rep(rest2), ..., debug_rep(restn));
     return print(os, debug_rep(rest)...);
 }
 
@@ -641,6 +661,31 @@ void display(Args ...args)
 ```
 
 ### Class:
+```cpp
+namespace bc
+{
+    // fwd decl
+    template<int... args>
+    struct add;
+
+    // recursion termination
+    template<>
+    struct add<>
+    {
+        static constexpr int value = 0;
+    };
+
+    template<int i, int... tail>
+    struct add<i, tail...>
+    {
+        static constexpr int value = i + add<tail...>::value;
+    }; 
+}
+
+// Client
+static_assert(6 == bc::add<1, 2, 3>::value);
+```
+
 Variadic class templates can be used to model tuple through empty base optimization. [Link](https://eli.thegreenplace.net/2014/variadic-templates-in-c/#id8)
 
 The most well known variadic class template implementation is `std::tuple`.
