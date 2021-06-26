@@ -688,7 +688,8 @@ static_assert(6 == bc::add<1, 2, 3>::value);
 
 Variadic class templates can be used to model tuple through empty base optimization. [Link](https://eli.thegreenplace.net/2014/variadic-templates-in-c/#id8)
 
-The most well known variadic class template implementation is `std::tuple`.
+The most well known variadic class template implementation is `std::tuple`. Check my inspired [implementation](../src/bc_tuple.h) for details.
+
 ```cpp
 #include <cstddef>
 #include <iostream>
@@ -793,23 +794,6 @@ namespace bc
     }
 }
 
-template <
-    class T, 
-    typename std::enable_if<std::is_integral<T>::value, bool>::type = true
-    >
-void do_stuff(T& t) 
-{
-  std::cout << "do_stuff integral\n";
-    // an implementation for integral types (int, char, unsigned, etc.)
-}
-
-template <class T,
-          typename std::enable_if<std::is_class<T>::value, bool>::type = true>
-void do_stuff(T& t) 
-{
-    std::cout << "do_stuff class\n";
-    // an implementation for class types
-}
 
 int main()
 {
@@ -820,9 +804,6 @@ int main()
     std::cout << "t[0]: " << bc::get<0>(b) << "\n";
     std::cout << "t[1]: " << bc::get<1>(b) << "\n";
     std::cout << "t[2]: " << bc::get<2>(b) << "\n";
-
-    int d = 3;
-    do_stuff<int>(d);    
     return 0;
 }
 ```
