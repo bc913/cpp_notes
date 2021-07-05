@@ -12,7 +12,7 @@
 #include <type_traits>
 
 namespace bc
-{
+{    
     template<typename T, T v>
     struct integral_constant
     {
@@ -146,7 +146,18 @@ namespace bc
         return cref(arg.get());
     }
     
+    // conditional
+    template<bool flag, typename TrueType, typename FalseType>
+    struct conditional
+    {
+        typedef TrueType type;
+    };
     
+    template<typename TrueType, typename FalseType>
+    struct conditional<false, TrueType, FalseType>
+    {
+        typedef FalseType type;
+    };
 }
 
 
