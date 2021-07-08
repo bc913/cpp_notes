@@ -5,6 +5,8 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 ## Notes
 [Class Design](notes/ClassDesign.md)
 
+[Linkage](notes/Linkage.md)
+
 [Inheritance & Polymorphism](notes/Inheritance_Polymorphism.md)
 
 [Operator Overloading](notes/OperatorOverloading.md)
