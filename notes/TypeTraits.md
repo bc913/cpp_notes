@@ -145,6 +145,103 @@ struct add_lvalue_reference<T, void_t<T&> > {using type = T&;};
 
 **Each class that performs type transformation holds a alias (or typedef) member *type* which yields to the result of the transformation.**
 
+
+## `std::enable_if`
+```cpp
+struct A{void print() const { std::cout << "--> A <--\n";}};
+struct B{void print() const { std::cout << "--> B <--\n";}};
+struct C{void print() const { std::cout << "--> C <--\n";}};
+
+template<bool val>
+using the_bool_constant = std::integral_constant<bool, val>;
+
+template<typename T>
+struct is_A_type : public the_bool_constant<false>{};
+template<>
+struct is_A_type<A> : public the_bool_constant<true>{};
+
+template<typename T>
+struct is_B_type : public the_bool_constant<false>{};
+template<>
+struct is_B_type<B> : public the_bool_constant<true>{};
+
+template<typename T>
+struct is_C_type : public the_bool_constant<false>{};
+template<>
+struct is_C_type<C> : public the_bool_constant<true>{};
+
+
+// VIA parameter
+template<typename T>
+void print_via_func_par1(const T& val, 
+    typename std::enable_if<is_A_type<T>::value, T>::type* = 0)
+{
+    val.print();
+}
+
+template<typename T>
+void print_via_func_par2(const T& val, 
+    typename std::enable_if<is_A_type<T>::value>::type* = 0)
+{
+    val.print();
+}
+
+template<typename T>
+void print_via_func_par3(const T& val, 
+    std::enable_if_t<is_A_type<T>::value>* = 0)
+{
+    val.print();
+}
+
+// Via non-type template parameter
+template<class T,
+        typename std::enable_if<is_B_type<T>::value, bool>::type = true>
+void print_via_non_type_templ_par1(const T& val)
+{
+    val.print();
+}
+
+template<class T, std::enable_if_t<is_B_type<T>::value, bool> = true>
+void print_via_non_type_templ_par2(const T& val)
+{
+    val.print();
+}
+
+// via type template parameter
+template<class T, typename = typename std::enable_if<is_C_type<T>::value, T>::type >
+void print_via_type_templ_par1(const T& val)
+{
+    val.print();
+}
+
+template<class T, typename = typename std::enable_if<is_C_type<T>::value>::type >
+void print_via_type_templ_par2(const T& val)
+{
+    val.print();
+}
+
+template<class T, typename = std::enable_if_t<is_C_type<T>::value> >
+void print_via_type_templ_par3(const T& val)
+{
+    val.print();
+}
+
+void test1(){
+    A a_obj;
+    print_via_func_par1(a_obj);
+    print_via_func_par2(a_obj);
+    print_via_func_par3(a_obj);
+
+    B b_obj;
+    print_via_non_type_templ_par1(b_obj);
+    print_via_non_type_templ_par2(b_obj);
+
+    C c_obj;
+    print_via_type_templ_par1(c_obj);
+    print_via_type_templ_par2(c_obj);
+    print_via_type_templ_par3(c_obj);
+}
+```
 ## Resources
 1.  [Boost libraries](https://www.boost.org/doc/libs/1_63_0/libs/type_traits/doc/html/index.html)
 2. [C++ Type Traits - Dr.Dobbs](https://www.drdobbs.com/cpp/c-type-traits/184404270?pgno=1)
