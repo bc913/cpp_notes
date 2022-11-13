@@ -24,8 +24,11 @@ struct integral_constant
     static constexpr T value = val;
 };
 
-using true_type = integral_constant<bool, true>;
-using false_type = integral_constant<bool, false>;
+template<bool val>
+using bool_constant = integral_constant<bool, val>;
+
+using true_type = integral_constant<bool, true>; // bool_constant<true>;
+using false_type = integral_constant<bool, false>; // bool_constant<false>;
 ```
 > Each compiler vendors have different implementations for type traits. The approach presented here is only one of them, NOT the only one.
 
