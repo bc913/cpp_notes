@@ -27,6 +27,8 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 
 [Design_Guidelines](notes/Design_Guidelines.md)
 
+[Misc](notes/Misc.md)
+
 ## Books
 - Modern C++ Design, Andrei Alexandrescu ([Chapter 1](books/moden_cpp_design/ch1.md), [Chapter 2](books/moden_cpp_design/ch2.md), [Chapter 3](books/moden_cpp_design/ch3.md))
 
