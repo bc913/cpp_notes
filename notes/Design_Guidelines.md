@@ -1,4 +1,4 @@
-# C++ Deisng Guideline
+# C++ Design Guidelines
 
 ### Linkage
 
