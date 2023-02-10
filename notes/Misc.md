@@ -1,5 +1,32 @@
 # Miscellaneous
 
+## Get Executing Assembly Path
+As stated in the [reference](https://stackoverflow.com/questions/1528298/get-path-of-executable):
+```cpp
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <limits.h>
+    #include <unistd.h>
+#endif
+
+std::filesystem::path get_executing_assembly_path()
+{
+    std::string path_str;
+#ifdef _WIN32
+    char path[MAX_PATH];
+    size_t len = GetModuleFileName(NULL, path, MAX_PATH);
+    path_str = std::string(path, len);
+#else
+    char path[PATH_MAX];
+    /*POSIX*/ssize_t len = readlink("/proc/self/exe", path, PATH_MAX);
+    path_str = std::string(path, (len > 0) ? len : 0);
+#endif
+
+    std::filesystem::path file_path(path_str)
+    return file_path.remove_filename();
+}
+```
 ## _WIN32 vs _MSC_VER Predefined Macros
 As stated in the [reference](https://github.com/osmcode/libosmium/issues/224#issuecomment-323811903):
 
