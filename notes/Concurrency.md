@@ -17,7 +17,7 @@ For instance, when an element is removed from a `std::vector<T>` by index, sever
 - Update the memory layout for the internal representation.
 - Update the size invariants.
 
-Whether it is single or multi-threaded environment, satisfying back the invariants requires multiple steps. However, in a multi-threaded environment, if one of the threads is removing an element from the container while another thread is iterating through the container for reading purposes, the invariant is broken at the time of the reading data for the second thread. This is `race condition` is dangerous and not easy to identify.
+Whether it is single or multi-threaded environment, satisfying back the invariants requires multiple steps. However, in a multi-threaded environment, if one of the threads is removing an element from the container while another thread is iterating through the container for reading purposes, the invariant is broken at the time of the reading data for the second thread. This `race condition` is dangerous and not easy to identify.
 
 To avoid this type of race conditions:
 - Using mutexes
@@ -43,8 +43,9 @@ void pop_from_stack()
 ### Deadlock
 When `race condition` almost means that multiple threads are racing with each other to be the first to operate on shared data, `deadlock` corresponds to that each thread is waiting for the other to complete or release the mutex.
 
-#### What causes deadlock?
-- Waiting to release locked mutexes
+#### **What causes deadlock?**
+1. Waiting to release locked mutexes:
+
 When a thread locks a mutex and concurrently at least one other thread locks another mutex, this cause one thread to wait for another. This is called `deadlock`. In other words, having multiple mutexes locked at the same time.
 
 ```cpp
@@ -56,9 +57,9 @@ int main()
 		while (true)
 		{
 			std::lock_guard<std::mutex> g1(m1);		// m1.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			std::lock_guard<std::mutex> g2(m2);		// m2.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			// m1.unlock();
 			// m2.unlock();
 		}
@@ -70,9 +71,9 @@ int main()
 		{
             // Notice the incompatible ordering with t1's lambda
 			std::lock_guard<std::mutex> g2(m2);		// m2.lock();			 
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			std::lock_guard<std::mutex> g1(m1);		// m1.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			//m1.unlock();
 			//m2.unlock();
 		}
@@ -84,9 +85,9 @@ int main()
 }
 ```
 
-- Having multiple threads w/o lock and call `join()` for each other. (Threads waiting for each other)
+2. Having multiple threads w/o lock and call `join()` for each other. (Threads waiting for each other)
 
-#### How to avoid deadlocks?
+#### **How to avoid deadlocks?**
 1. Lock and unlock mutexes in the same order.
 ```cpp
 std::mutex m1, m2;
@@ -97,9 +98,9 @@ int main()
 		while (true)
 		{
 			std::lock_guard<std::mutex> g1(m1);		// m1.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			std::lock_guard<std::mutex> g2(m2);		// m2.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			// m1.unlock();
 			// m2.unlock();
 		}
@@ -111,9 +112,9 @@ int main()
 		{
             // Notice the same ordering with t1's lambda
 			std::lock_guard<std::mutex> g1(m1);		// m1.lock();			 
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			std::lock_guard<std::mutex> g2(m2);		// m2.lock();
-			std::cout << std::this_thread::get_id() << std::endl;
+			std::cout << std::this_thread::get_id() << "\n";
 			//m1.unlock();
 			//m2.unlock();
 		}
@@ -154,6 +155,7 @@ When designing a class or a container, if concurrency is a concern, act meticilo
 
 5. Using `std::unique_lock`
 
+Check out the section below for details.
 
 ### `std::unique_lock`
 `std::uniqe_lock` brings some flexibility by providing more user control on the locks. `std::lock_guard` is initialized by locking the given mutex and unlocks the mutex when the destructor is called so the lock status of the mutex is dependent on the lifetime of the `std::lock_guard` instance. 
@@ -222,7 +224,7 @@ void func()
 Check `Call a function exactly onece even if called concurrently using std::once_flag and std::call_once` section
 
 ### Reader-writer mutex
-There are some instances that exclusive lock (lock by only one thread) is only required during `write` operation and concurrent access by multiple threads is required for `write` operations. This idiom requires the usage of `std::shared_mutex`.
+There are some instances that exclusive lock (lock by only one thread) is only required during `write` operation and concurrent access by multiple threads is required for `read` operations. This idiom requires the usage of `std::shared_mutex`.
 ```cpp
 
 std::shared_mutex m;
@@ -241,7 +243,7 @@ std::string read(std::string key)
 void write(std::string key, std::string value)
 {
 	std::unique_lock<std::shared_mutex> l(m);
-	some_cache[key] value;
+	some_cache[key] = value;
 }
 ```
 
@@ -388,7 +390,7 @@ int main()
 	std::cout << "Caller thread: " << std::this_thread::get_id() << "\n";
 	std::future<int> future = std::async(background_calculation);
 	// do_some_other_stuff();
-	std::cout << "The answer is " << future.get() << std::endl;
+	std::cout << "The answer is " << future.get() << "\n";
 	return 0;
 }
 ```
@@ -467,7 +469,7 @@ Task result:                    505500
 ```
 
 ### `std::promise`
-#### ** What is it?**
+#### **What is it?**
 As stated in [10]:
 > `std::promise` is an asynchronous provider ("an object that provides a result to a shared state") i.e. a promise is the thing that you set a result on, so that you can get it from the associated future.
 
@@ -659,7 +661,7 @@ A method can be called only and only one time even if it is called from differen
 std::once_flag flag1;
 void to_be_called_once()
 {
-	std::call_once(flag1, [](){std::cout << "This is the first and last call" << std::endl;});
+	std::call_once(flag1, [](){std::cout << "This is the first and last call" << "\n";});
 }
 int main()
 {
