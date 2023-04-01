@@ -29,6 +29,11 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 
 [Misc](notes/Misc.md)
 
+## Build
+### Linux
+```bash
+g++ sketch.cpp -o bin/pg_out && ./bin/pg_out
+```
 ## Books
 - Modern C++ Design, Andrei Alexandrescu ([Chapter 1](books/moden_cpp_design/ch1.md), [Chapter 2](books/moden_cpp_design/ch2.md), [Chapter 3](books/moden_cpp_design/ch3.md))
 
