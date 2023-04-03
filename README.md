@@ -15,6 +15,8 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 
 [Move & Forwarding](notes/MoveAndForwarding.md)
 
+[Concurrency Fundamentals](notes/Concurrency_Fundamentals.md)
+
 [Concurrency in C++](notes/Concurrency.md)
 
 [Iterator Traits](notes/IteratorTraits.md)
