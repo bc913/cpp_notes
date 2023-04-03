@@ -1,16 +1,5 @@
-# Concurrency
-## What is it?
-Occurence of multiple tasks or operations or activities at the same time.
-## Types of concurrency
-1. Multi - process
-2. Multi-threading
-3. Asynchrony (???)
-4. Parallelism
-5. Distributed data
-
-
+# Concurrency in C++
 ## Protecting the shared data
-
 ### What is it?
 If the data in your code is shared through different threads and those threads are allowed to mutate (write) it, then there is a danger of breaking the one or more conditions which satisfies the `invariance` of that data.
 
@@ -731,4 +720,3 @@ public:
 [[9] https://www.youtube.com/watch?v=WDjfcbxIlVQ&feature=youtu.be](https://www.youtube.com/watch?v=WDjfcbxIlVQ&feature=youtu.be)
 
 [[10] What is std::promise?](https://stackoverflow.com/questions/11004273/what-is-stdpromise) 
-
