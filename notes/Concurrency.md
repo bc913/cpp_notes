@@ -1,4 +1,12 @@
 # Concurrency
+## What is it?
+Occurence of multiple tasks or operations or activities at the same time.
+## Types of concurrency
+1. Multi - process
+2. Multi-threading
+3. Asynchrony (???)
+4. Parallelism
+5. Distributed data
 
 
 ## Protecting the shared data
