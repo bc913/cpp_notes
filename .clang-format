@@ -1,0 +1,123 @@
+# https://zed0.co.uk/clang-format-configurator/
+# https://leimao.github.io/blog/Clang-Format-Quick-Tutorial/
+# find . -name '*.h' -o -name '*.cpp' | xargs clang-format -i -style=Webkit
+# https://www.mycpu.org/clang-format/
+# https://github.com/motine/cppstylelineup
+
+---
+# Common settings
+BasedOnStyle: LLVM
+TabWidth: 4
+IndentWidth: 4
+UseTab: Never
+
+---
+Language: Cpp
+
+# http://releases.llvm.org/6.0.1/tools/clang/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code
+# int formatted_code;
+# // clang-format off
+#     void    unformatted_code  ;
+# // clang-format on
+# void formatted_code_again;
+
+AccessModifierOffset: 0
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignConsecutiveShortCaseStatements: Consecutive
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 2
+
+AllowBreakBeforeNoexceptSpecifier: Never
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Inline
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+
+BinPackArguments: true
+BinPackParameters: true
+BitFieldColonSpacing: Both
+BreakAfterAttributes: Always
+BreakArrays: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Linux
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterComma
+BreakStringLiterals: true
+
+ColumnLimit: 80
+CompactNamespaces: true
+Cpp11BracedListStyle: true
+
+DisableFormat: false
+
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
+
+FixNamespaceComments: true
+
+IncludeBlocks: Preserve
+IndentAccessModifiers: false
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentExternBlock: AfterExternBlock
+IndentPPDirectives: AfterHash
+IndentRequiresClause: false
+IndentWrappedFunctionNames: false
+InsertNewlineAtEOF: true
+
+LambdaBodyIndentation: Signature
+
+MaxEmptyLinesToKeep: 1
+
+NamespaceIndentation: All
+
+PPIndentWidth: 1
+PackConstructorInitializers: NextLine
+PointerAlignment: Left
+
+ReferenceAlignment: Pointer
+ReflowComments: true
+
+SeparateDefinitionBlocks: Always
+ShortNamespaceLines: 5
+SortIncludes: CaseInsensitive
+SortUsingDeclarations: Lexicographic
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeJsonColon: false
+SpaceBeforeParens: Never
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpacesBeforeTrailingComments: 3
+SpacesInAngles: Leave
+SpacesInContainerLiterals: false
+SpacesInParens: Never
+SpacesInSquareBrackets: false
+Standard: c++17
+SpaceBeforeRangeBasedForLoopColon: true
+
+
+
+
+...
