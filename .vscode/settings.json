@@ -1,0 +1,35 @@
+{
+    // Workbench
+    "workbench.editor.showTabs": true,
+    "workbench.activityBar.visible": true,
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#00ff33",
+        "editor.lineHighlightBackground": "#111144"
+    },
+    "workbench.statusBar.visible": true,
+    // Clang-format
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Never, Language: Cpp, DisableFormat: false, Standard: c++17, NamespaceIndentation: All}",
+    // Clang-tidy
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "C_Cpp.codeAnalysis.exclude": { // Assumption: CMake binary and install locations is under out
+        "**/out": true
+    },
+    "C_Cpp.codeAnalysis.clangTidy.config": "", // == file
+    //"C_Cpp.codeAnalysis.clangTidy.fallbackConfig": "{Checks: ‘-*,clang-analyzer-*’, CheckOptions: [{key: x, value: y}]}",
+    // Cmake
+    "cmake.useCMakePresets": "always",
+    "cmake.buildBeforeRun": false,
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnOpen": false,
+    // Editor
+    "editor.minimap.enabled": false,
+    "editor.cursorStyle": "line",
+    "editor.lineNumbers": "on",
+    "editor.tabCompletion": "on",
+    "editor.formatOnSave": true,
+    // Window
+    "window.zoomLevel": 0,
+    // Files
+    "files.eol": "auto" //cross-platform line ending setting
+}
