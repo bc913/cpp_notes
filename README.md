@@ -31,6 +31,8 @@ This repo reflects some of the best practices for C++ based on my knowledge and 
 
 [Misc](notes/Misc.md)
 
+[Idioms](notes/Idioms.md)
+
 ## Build
 ### Linux
 ```bash
